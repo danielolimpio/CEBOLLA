@@ -1,3 +1,4 @@
+
 name: 🚀 Deploy Cebolla.app (Next.js Static)
 
 on:
@@ -18,7 +19,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
+          # Removido 'cache: npm' para evitar erro de lock file ausente no repositório
 
       - name: 📦 Instalar Dependências
         run: npm install
@@ -29,21 +30,12 @@ jobs:
       - name: 📂 Sincronizar Arquivos com Hostinger (Pasta /out)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          # Servidor da Hostinger
           server: ftp.hostinger.com
-          # Segredos configurados no GitHub (Settings > Secrets)
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASS }}
-          
-          # IMPORTANTE: O Next.js com 'output: export' gera os arquivos na pasta /out
           local-dir: ./out/
-          
-          # Diretório de destino no servidor (public_html para o domínio principal)
           server-dir: public_html/
-          
-          # Configurações de conexão para Hostinger
           protocol: ftps
           port: 21
           passive: true
-          # Limpa arquivos que não existem no repositório local
           dangerous-clean-slate: true
