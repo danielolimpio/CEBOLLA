@@ -1,30 +1,38 @@
-name: Deploy para Hostinger (cebolla.app)
+name: Deploy Next.js Static via FTP (Hostinger)
 
 on:
- push:
- branches:
- - main # troque se sua branch de produção for outra
+  push:
+    branches:
+      - main
 
 jobs:
- ftp-deploy:
- runs-on: ubuntu-latest
+  deploy:
+    runs-on: ubuntu-latest
 
- steps:
- - name: Checkout do código
- uses: actions/checkout@v4
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
 
- - name: Deploy via FTP
- uses: SamKirkland/FTP-Deploy-Action@v4.3.4
- with:
- server: danielolimpio.com
- port: 21
- username: u698256104.cebolla
- password: ${{ secrets.FTP_PASSWORD }}
- protocol: ftp
- local-dir: ./ # pasta do projeto que será enviada
- server-dir: /domains/cebolla.app/public_html/
- exclude: |
- **/.git*
- **/.github/**
- **/node_modules/**
- **/.vscode/**
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Instalar dependências
+        run: npm install
+
+      - name: Build do Next.js (Static Export)
+        run: npm run build
+
+      - name: Verificar pasta out
+        run: ls -la out
+
+      - name: Deploy via FTP para Hostinger
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASS }}
+          local-dir: ./out/
+          server-dir: /
+          dangerous-clean-slate: true
