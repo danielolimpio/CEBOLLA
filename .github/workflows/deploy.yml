@@ -9,19 +9,24 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout do repositório
+      - name: Checkout (limpo)
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Garante todos os arquivos
 
-      # ⚠️ IMPORTANTE: Certifique-se de que seu repositório GitHub
-      # contém APENAS os arquivos estáticos (HTML, CSS, JS) na raiz
-      # (NENHUM .tsx, .json, .md, etc.)
+      - name: Verificar estrutura
+        run: |
+          echo "Conteúdo do repositório:"
+          ls -la
+          echo "Arquivos críticos:"
+          ls -la index.html style.css
 
-      - name: Deploy via FTP para Hostinger
+      - name: Deploy para Hostinger
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASS }}
-          local-dir: ./  # Só deve conter HTML/CSS/JS
+          local-dir: ./  # Só arquivos estáticos na raiz
           server-dir: /
           dangerous-clean-slate: true
