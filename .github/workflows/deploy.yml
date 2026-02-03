@@ -1,4 +1,3 @@
-
 name: 🚀 Deploy Cebolla.app (Next.js Static)
 
 on:
@@ -19,7 +18,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          # Removido 'cache: npm' para evitar erro de lock file ausente no repositório
 
       - name: 📦 Instalar Dependências
         run: npm install
@@ -37,5 +35,4 @@ jobs:
           server-dir: public_html/
           protocol: ftps
           port: 21
-          passive: true
           dangerous-clean-slate: true
