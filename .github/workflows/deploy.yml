@@ -12,12 +12,16 @@ jobs:
       - name: Checkout do repositório
         uses: actions/checkout@v4
 
+      # ⚠️ IMPORTANTE: Certifique-se de que seu repositório GitHub
+      # contém APENAS os arquivos estáticos (HTML, CSS, JS) na raiz
+      # (NENHUM .tsx, .json, .md, etc.)
+
       - name: Deploy via FTP para Hostinger
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASS }}
-          local-dir: ./
-          server-dir: /
+          local-dir: ./  # Só deve conter HTML/CSS/JS
+          server-dir: public_html/
           dangerous-clean-slate: true
