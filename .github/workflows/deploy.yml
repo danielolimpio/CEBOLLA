@@ -1,4 +1,4 @@
-name: 🚀 Deploy Cebolla.app (Next.js Static)
+name: Deploy Next.js Static to Hostinger
 
 on:
   push:
@@ -6,33 +6,37 @@ on:
       - main
 
 jobs:
-  build-and-deploy:
-    name: 🏗️ Build & 🚢 Deploy
+  deploy:
     runs-on: ubuntu-latest
-
     steps:
-      - name: 📥 Checkout do Repositório
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: 🟢 Configurar Node.js
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: 20
 
-      - name: 📦 Instalar Dependências
+      - name: Install Dependencies
         run: npm install
+        env:
+          CI: false
 
-      - name: 🛠️ Gerar Build (Static Export)
-        run: npm run build
+      - name: Build & Export
+        run: |
+          npm run build
+          npm run export
+          ls -la out  # Verifica se a pasta existe
 
-      - name: 📂 Sincronizar Arquivos com Hostinger (Pasta /out)
+      - name: Deploy
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: ftp.hostinger.com
+          server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASS }}
           local-dir: ./out/
           server-dir: public_html/
           protocol: ftps
           port: 21
+          passive: true
           dangerous-clean-slate: true
