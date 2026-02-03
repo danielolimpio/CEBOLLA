@@ -1,0 +1,30 @@
+name: Deploy para Hostinger (cebolla.app)
+
+on:
+ push:
+ branches:
+ - main # troque se sua branch de produção for outra
+
+jobs:
+ ftp-deploy:
+ runs-on: ubuntu-latest
+
+ steps:
+ - name: Checkout do código
+ uses: actions/checkout@v4
+
+ - name: Deploy via FTP
+ uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+ with:
+ server: danielolimpio.com
+ port: 21
+ username: u698256104.cebolla
+ password: ${{ secrets.FTP_PASSWORD }}
+ protocol: ftp
+ local-dir: ./ # pasta do projeto que será enviada
+ server-dir: /domains/cebolla.app/public_html/
+ exclude: |
+ **/.git*
+ **/.github/**
+ **/node_modules/**
+ **/.vscode/**
