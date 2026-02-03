@@ -9,24 +9,15 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout (limpo)
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Garante todos os arquivos
 
-      - name: Verificar estrutura
-        run: |
-          echo "Conteúdo do repositório:"
-          ls -la
-          echo "Arquivos críticos:"
-          ls -la index.html style.css
-
-      - name: Deploy para Hostinger
+      - name: Deploy
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASS }}
-          local-dir: ./  # Só arquivos estáticos na raiz
-          server-dir: /
+          local-dir: ./
+          server-dir: public_html/
           dangerous-clean-slate: true
